@@ -1,0 +1,70 @@
+defaults:
+  - data: data-base
+  - model: model-base
+  - optimizer: sam
+  - lr_scheduler: cosine
+
+  - override data/dataset: ImageNet
+  - _self_
+
+epochs: 300
+batch_size: 256 # type: int, (1) batch size per rank
+dist_eval: False
+syncbn: False
+
+dist_backend: nccl
+dist_url: env://
+seed: 1234  # type:'int', (1) `null` for no seed
+resume: null  # type:'str', (1) path of checkpoint (2) `null` for no resume 
+log_freq: 3
+
+wandb: 
+  enable_wandb: True
+  project: imagenet-vit-sam-type
+  name: ${optimizer.name}-rho${optimizer.rho}-${now:%Y-%m-%d}-${now:%H-%M-%S}
+  tags: null
+
+# --- override default setting --- #
+model:
+  name: vit_tiny_patch16_224
+optimizer:
+  base_optim: AdamW
+  AdamW:
+    lr: 1e-3
+    weight_decay: 1e-4
+  rho: 0.1
+lr_scheduler:
+  warmup_epoch: 5
+  warmup_batchidx: 0
+
+
+
+# ------------------------ Hydra Setting ------------------------
+hydra:
+  run:
+    dir: logsv2/${data.dataset.name}-epoch${epochs}-bsz${batch_size}-${model.name}-${optimizer.name}-rho${optimizer.rho}-${now:%Y-%m-%d}-${now:%H-%M-%S}
+  sweep:
+    dir: logs/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+  job_logging:
+    version: 1
+    formatters:
+      streamFormatter:
+        format: '[%(asctime)s][${hydra.run.dir}:%(name)s][%(levelname)s] - %(message)s'
+      fileFormatter:
+        format: '[%(asctime)s][%(levelname)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: streamFormatter
+        stream: ext://sys.stdout
+      file:
+        class: logging.FileHandler
+        formatter: fileFormatter
+        filename: ${hydra.runtime.output_dir}/log.log
+    root:
+      level: INFO
+      handlers:
+      - console
+      - file
+    disable_existing_loggers: false

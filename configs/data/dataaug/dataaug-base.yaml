@@ -1,0 +1,7 @@
+scale: null
+ratio: null
+crop_pct: 0.875
+p_hflip: 0.5
+cutout:
+  p: 0.0
+  size: null

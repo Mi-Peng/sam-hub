@@ -1,0 +1,7 @@
+name: AdamW
+base_optim: AdamW
+AdamW:
+  lr: 0.2
+  weight_decay: 1e-3
+  eps: 1e-8
+  betas: [0.9, 0.999]

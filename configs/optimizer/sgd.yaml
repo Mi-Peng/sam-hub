@@ -1,0 +1,7 @@
+name: SGD
+base_optim: SGD
+SGD:
+  lr: 0.1 
+  weight_decay: 1e-3
+  momentum: 0.9
+  nesterov: False

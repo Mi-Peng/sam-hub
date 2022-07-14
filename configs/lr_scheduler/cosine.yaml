@@ -1,0 +1,8 @@
+name: CosineLRscheduler
+warmup_init_lr: 0.0
+warmup_epoch: 0
+warmup_batchidx: 0
+
+
+eta_min: 0.0
+T_max: null # type:'int', `null` for set it as `epochs`

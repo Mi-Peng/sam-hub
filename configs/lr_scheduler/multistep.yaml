@@ -1,0 +1,6 @@
+name: MultiStepLRscheduler
+warmup_init_lr: 0.0
+warmup_epoch: 0
+
+milestone: [60, 120, 160]
+gamma: 0.2

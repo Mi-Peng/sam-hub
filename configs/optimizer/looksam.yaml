@@ -1,0 +1,16 @@
+name: LookSAM
+
+base_optim: SGD
+SGD:
+  lr: 0.1
+  weight_decay: 1e-3
+  momentum: 0.9
+
+AdamW:
+  lr: 0.1
+  weight_decay: 1e-3
+
+rho: 0.1
+k: 5
+alpha: 0.7
+use_closure: True

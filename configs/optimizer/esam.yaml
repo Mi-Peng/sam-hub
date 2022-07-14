@@ -1,0 +1,17 @@
+name: ESAM
+
+base_optim: SGD
+SGD:
+  lr: 0.1
+  weight_decay: 1e-3
+  momentum: 0.9
+
+AdamW:
+  lr: 0.1
+  weight_decay: 1e-3
+  momentum: 0.9
+
+rho: 0.1
+beta: 0.5
+gamma: 0.5
+use_closure: True

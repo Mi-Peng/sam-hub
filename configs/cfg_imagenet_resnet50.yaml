@@ -1,0 +1,73 @@
+defaults:
+  - data: data-base
+  - model: model-base
+  - optimizer: sgd
+  - lr_scheduler: cosine
+
+  - override data/dataset: ImageNet
+  - _self_
+
+epochs: 120
+batch_size: 256 # type: int, (1) batch size per rank (2) use 4 GPU 
+syncbn: False
+seed: 1234  # type:'int', (1) `null` for no seed
+
+smoothing: 0.0
+
+dist_backend: nccl
+dist_url: env://
+dist_eval: False
+
+resume: null  # type:'str', (1) path of checkpoint (2) `null` for no resume 
+log_freq: 3
+checkpoint_freq: null # ytpe: 'int' (1) `null` for no save checkpoint
+
+
+wandb: 
+  enable_wandb: True
+  project: imagenet-results
+  name: ${model.name}-SGD-${now:%Y-%m-%d}-${now:%H-%M-%S}
+  group: null
+
+# --- override default setting --- #
+model:
+  name: resnet50
+optimizer:
+  SGD:
+    lr: 0.4 # 0.1 * batchsize / 256
+    weight_decay: 1e-4
+lr_scheduler:
+  warmup_epoch: 0
+  warmup_batchidx: 5000
+
+
+
+# ------------------------ Hydra Setting ------------------------
+hydra:
+  run:
+    dir: logs/imagenet/resnet50-samhub/${data.dataset.name}-epoch${epochs}-bsz${batch_size}-${model.name}-${optimizer.name}-${now:%Y-%m-%d}-${now:%H-%M-%S}
+  sweep:
+    dir: logs/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+  job_logging:
+    version: 1
+    formatters:
+      streamFormatter:
+        format: '[%(asctime)s][${hydra.run.dir}:%(name)s][%(levelname)s] - %(message)s'
+      fileFormatter:
+        format: '[%(asctime)s][%(levelname)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: streamFormatter
+        stream: ext://sys.stdout
+      file:
+        class: logging.FileHandler
+        formatter: fileFormatter
+        filename: ${hydra.runtime.output_dir}/log.log
+    root:
+      level: INFO
+      handlers:
+      - console
+      - file
+    disable_existing_loggers: false

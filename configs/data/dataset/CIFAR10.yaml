@@ -1,0 +1,6 @@
+name: CIFAR10
+datapath: /public/data0/DATA-1/users/mipeng7/datasets
+mean: [0.491, 0.482, 0.446]
+std: [0.247, 0.243, 0.261]
+n_classes: 10
+input_size: 32

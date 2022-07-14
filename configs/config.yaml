@@ -1,0 +1,60 @@
+defaults:
+  - data: data-base
+  - model: model-base
+  - optimizers: sgd
+  - lr_scheduler: cosine
+  - _self_
+
+
+epochs: 90
+batch_size: 512 # type: int, total batch size  
+dist_eval: False
+syncbn: False
+single_bn_stats: False
+
+dist_backend: nccl
+dist_url: env://
+seed: 1234  # type:'int', (1) `null` for no seed
+resume: null  # type:'str', (1) path of checkpoint (2) `null` for no resume 
+log_freq: 3
+
+smoothing: 0.0
+
+wandb: 
+  enable_wandb: True
+  project: wand_test
+  name: run-${now:%Y-%m-%d}-${now:%H-%M-%S}
+  group: null
+
+# --- override default setting --- #
+
+
+# ------------------------ Hydra Setting ------------------------
+hydra:
+  run:
+    dir: logs/imagenet/${data.dataset.name}-epoch${epochs}-bsz${batch_size}-${model.name}-${optimizers.name}
+  sweep:
+    dir: logs/multirun/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra.job.num}
+  job_logging:
+    version: 1
+    formatters:
+      streamFormatter:
+        format: '[%(asctime)s][${hydra.run.dir}:%(name)s][%(levelname)s] - %(message)s'
+      fileFormatter:
+        format: '[%(asctime)s][%(levelname)s] - %(message)s'
+    handlers:
+      console:
+        class: logging.StreamHandler
+        formatter: streamFormatter
+        stream: ext://sys.stdout
+      file:
+        class: logging.FileHandler
+        formatter: fileFormatter
+        filename: ${hydra.runtime.output_dir}/log.log
+    root:
+      level: INFO
+      handlers:
+      - console
+      - file
+    disable_existing_loggers: false

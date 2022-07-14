@@ -1,0 +1,16 @@
+name: SAM
+base_optim: SGD
+SGD:
+  lr: 0.1
+  weight_decay: 1e-3
+  momentum: 0.9
+
+AdamW:
+  lr: 0.1
+  weight_decay: 1e-3
+  eps: 1e-8
+  betas: [0.9, 0.999]
+rho: 0.15
+use_closure: True
+single_bn_stats: True
+sync_perturbaton: False
