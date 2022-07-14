@@ -29,7 +29,7 @@ conda activate samhub
 
 - Install requirements
 ```bash
-pip install hydra
+pip install hydra-core --upgrade
 pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu113
 ```
 
